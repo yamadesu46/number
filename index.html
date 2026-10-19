@@ -115,7 +115,7 @@ async function restoreCloud(){
   var info=await gh("GET","assets/manifest.json");
   cloudManifest=parseManifest(info);
   if(!info){cloudStatus("GitHubに共有素材はまだありません。保存用トークンをセットして素材を選んでください。");return}
-  var count=0;
+  var count=0,failed=0;
   for(var k of cloudKeys){
    var meta=cloudManifest[k];if(!meta||typeof meta.path!=="string"||!meta.path.startsWith("assets/"+k+"/")||cloudTouched.has(k))continue;
    try{
@@ -124,10 +124,11 @@ async function restoreCloud(){
     var item={name:meta.name||k,blob:new Blob([await response.arrayBuffer()],{type:meta.type||"application/octet-stream"}),cloud:true};
     if(cloudTouched.has(k))continue;
     setAsset(k,item);await assetSet(k,item);count++
-   }catch(e){cloudStatus("一部の共有素材を読み込めませんでした。ページを再読み込みしてください。",true)}
+   }catch(e){failed++}
   }
-  if(count)cloudStatus("GitHubの共有素材を "+count+" 件読み込みました。");
-  else if(!E("cloud-status").classList.contains("cloud-warning"))cloudStatus("GitHubの共有素材を確認しました。");
+  if(failed)cloudStatus(count+" 件読み込みました。一部の共有素材を読み込めませんでした。ページを再読み込みしてください。",true);
+  else if(count)cloudStatus("GitHubの共有素材を "+count+" 件読み込みました。");
+  else cloudStatus("GitHubの共有素材を確認しました。");
  }catch(e){cloudStatus("GitHub素材の確認に失敗: "+e.message,true)}
  finally{cloudReady=true}
 }
@@ -145,7 +146,7 @@ function csv(){if(!H.length){say("書き出す履歴がありません");return}
 function reset(){if(timer){say("抽選を停止してからリセットしてください");return}if(!H.length)return;if(!confirm("抽選履歴を削除しますか？ 必要なら先にCSVを書き出してください。"))return;H=[];saveHistory();E("number").textContent="—";E("status").innerHTML='<i class="dot"></i>READY';render()}
 Object.keys(defaults).forEach(function(k){var el=E(k);if(!el)return;if(el.type==="checkbox")el.checked=S[k];else el.value=S[k]});
 document.querySelectorAll(".setting").forEach(function(el){el.addEventListener("input",read)});
-["background","font","bgm","startFx","stopFx"].forEach(function(k){E(k+"-file").addEventListener("change",function(e){upload(k,e.target.files[0])})});
+["background","font","bgm","startFx","stopFx"].forEach(function(k){E(k+"-file").addEventListener("change",function(e){var file=e.target.files[0];e.target.value="";upload(k,file)})});
 E("clear-background").onclick=function(){removeShared("background")};
 ["bgm","startFx","stopFx"].forEach(function(k){E("clear-"+k).onclick=function(){removeShared(k)}});
 E("start").onclick=start;E("stop").onclick=stop;E("bgm-toggle").onclick=toggleBgm;E("csv").onclick=csv;E("reset").onclick=reset;bgm.addEventListener("play",updateBgmButton);bgm.addEventListener("pause",updateBgmButton);
