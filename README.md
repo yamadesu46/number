@@ -1,13 +1,25 @@
 # NUMBER STAGE
 
-Win / Mac のブラウザで使える、16:9 のランダム数字抽選アプリです。外部ライブラリやビルドは不要です。
+Windows / Mac のブラウザで使える、16:9 のランダム数字抽選アプリです。外部ライブラリやビルドは不要です。アプリ本体はリポジトリ直下の [index.html](index.html) です。
 
-## 使い方
+## 機能
 
-[GitHub Pages](https://yamadesu46.github.io/number/) で開き、数字の候補を設定して「スタート」「ストップ」を押します。背景画像、BGM、効果音、フォントは画面から選択できます。抽選履歴は「CSV書き出し」で保存できます。
+- 数字の候補を範囲またはリストで指定し、重複の有無を設定
+- スタート・ストップで抽選し、16:9 の画面に数字を表示
+- タブで抽選画面と履歴画面を切り替え
+- 背景画像、数字のフォント・色・大きさ・位置を設定
+- BGM は専用ボタンで再生・停止し、抽選とは独立してリピート
+- スタート音は抽選開始時に鳴り、抽選停止時に止まる
+- ストップ音は抽選停止時に鳴る
+- 3 種類の音量を個別に調整し、読み込んだ音声を解除
+- 抽選履歴をブラウザに保存し、CSV で書き出し
 
-## GitHub Pages の公開設定
+## 別の端末で編集する
 
-リポジトリの **Settings → Pages** で、**Build and deployment → Source: Deploy from a branch → Branch: main / (root)** を選んで保存します。公開後のURLは https://yamadesu46.github.io/number/ です。
+GitHub の `yamadesu46/number` リポジトリを開き、`index.html` を編集してください。Codex Cloud で続ける場合は、このリポジトリを含むクラウド環境から新しいタスクを始めてください。変更は GitHub にコミットして共有します。
 
-設定・アップロード素材・抽選履歴は端末とブラウザごとに保存されます。GitHubリポジトリにはアップロードされません。
+## GitHub Pages
+
+GitHub Pages を有効にしている場合、アプリのURLは https://yamadesu46.github.io/number/ です。未設定なら **Settings → Pages → Deploy from a branch → main / (root)** を選んで保存します。
+
+設定、抽選履歴、アップロードした素材は端末・ブラウザごとに保存されます。GitHubにはアップロードされないため、必要な履歴はCSVで保管してください。
