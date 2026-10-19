@@ -8,6 +8,7 @@
 .audio-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;align-items:stretch}.audio-row .file{min-width:0}.audio-row .btn{padding:8px 10px}.field .range{margin-top:7px}
 .stage-tabs{display:flex;gap:7px;margin:0 0 10px}.tab{border:1px solid #414851;background:#1b2028;color:#aeb5be;border-radius:9px;padding:9px 16px;font-weight:800;cursor:pointer}.tab[aria-selected="true"]{background:#ccf45a;border-color:#ccf45a;color:#151b0d}.history-stage{display:flex;flex-direction:column;padding:4%;background:radial-gradient(ellipse at 50% 0%,#293947,#0c101a 72%)}.history-heading{font-size:clamp(16px,3cqw,44px);font-weight:900;letter-spacing:.06em;margin-bottom:1.5cqw}.history-meta{color:#b7c0c7;font-size:clamp(10px,1.5cqw,20px);margin-bottom:2cqw}.history-board{display:flex;flex-wrap:wrap;align-content:flex-start;gap:1cqw;overflow:auto;flex:1;min-height:0;padding-right:4px}.history-board .ball{min-width:0;width:clamp(34px,5.2cqw,76px);height:clamp(34px,5.2cqw,76px);font-size:clamp(14px,2.3cqw,30px)}.history-board .empty{font-size:clamp(12px,1.8cqw,24px)}.history-foot{color:#929daa;font-size:clamp(9px,1.1cqw,16px);letter-spacing:.1em;margin-top:1cqw}
 .bgm-control{border-color:#9dbb4e;color:#dfffa3;white-space:nowrap}.bgm-control:hover{background:#344025}.bgm-control[aria-pressed="true"]{background:#344025;color:#eaffb7}
+.cloud-box{border:1px solid #53684b;border-radius:10px;background:#1d2a24;padding:12px}.cloud-box .input{margin:5px 0 8px}.cloud-status{font-size:11px;line-height:1.5;color:#c6e6c8;margin-top:8px;overflow-wrap:anywhere}.cloud-box a{color:#d5f79b}.cloud-warning{color:#ffd19d}
 </style>
 </head>
 <body>
@@ -22,6 +23,7 @@
 </main>
 <aside class="side">
 <h2>表示・抽選設定　<small>16 : 9</small></h2>
+<section class="group"><h3>素材をGitHubで共有</h3><div class="cloud-box"><label class="caption" for="github-token">保存用GitHubトークン（このタブのみ）</label><input class="input" id="github-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_..."><button class="btn" id="github-connect" type="button">保存用トークンをセット</button><div class="cloud-status" id="cloud-status" role="status">GitHubの素材を確認中…</div><div class="hint">トークンをセットして背景・BGM・スタート音・ストップ音を選ぶと、公開リポジトリに保存します。保存した素材は誰でも閲覧できます。<a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">fine-grained token を作成</a>し、対象を yamadesu46/number のみに、Contents を Read and write にしてください。トークンはページやGitHubに記録しません。</div></div></section>
 <section class="group"><h3>数字の候補</h3><div class="field"><label for="mode">指定方法</label><select class="input setting" id="mode"><option value="range">範囲で指定</option><option value="list">リストで指定</option></select></div><div class="two" id="range-fields"><div class="field"><label for="min">最小値</label><input class="input setting" id="min" type="number" step="1"></div><div class="field"><label for="max">最大値</label><input class="input setting" id="max" type="number" step="1"></div></div><div class="field" id="list-fields" hidden><label for="list">候補の数字</label><textarea class="input setting" id="list" rows="3" placeholder="1, 3, 5, 7"></textarea><div class="hint">カンマ・空白・改行で区切ります。</div></div><label class="check"><input class="setting" id="noRepeat" type="checkbox">同じ数字を繰り返さない</label><div class="error" id="error"></div></section>
 <section class="group"><h3>背景</h3><label class="file">▧ <span id="background-name">背景画像を選択</span><input type="file" id="background-file" accept="image/*"></label><div class="field"><label for="shade">背景を暗くする</label><div class="range"><input class="setting" id="shade" type="range" min="0" max="80"><output id="shade-out"></output></div></div><button class="btn" id="clear-background">背景画像を外す</button></section>
 <section class="group"><h3>数字の表示</h3><div class="field"><label for="font">フォント</label><select class="input setting" id="font"><option value="sans">ゴシック</option><option value="serif">明朝・セリフ</option><option value="mono">等幅</option><option value="custom">アップロードしたフォント</option></select></div><label class="file">Aa <span id="font-name">フォントファイルを選択</span><input type="file" id="font-file" accept=".woff,.woff2,.ttf,.otf,font/*"></label><div class="field"><label for="size">文字の大きさ</label><div class="range"><input class="setting" id="size" type="range" min="8" max="48"><output id="size-out"></output></div></div><div class="two"><div class="field"><label for="x">左右の位置</label><div class="range"><input class="setting" id="x" type="range" min="5" max="95"><output id="x-out"></output></div></div><div class="field"><label for="y">上下の位置</label><div class="range"><input class="setting" id="y" type="range" min="5" max="95"><output id="y-out"></output></div></div></div><div class="field"><label for="color">文字色</label><input class="setting" id="color" type="color"></div></section>
@@ -29,8 +31,8 @@
 <div class="field"><span class="caption">BGM（専用ボタンで再生・リピート）</span><div class="audio-row"><label class="file">♫ <span id="bgm-name">BGMを選択</span><input type="file" id="bgm-file" accept="audio/*"></label><button class="btn" id="clear-bgm" type="button" disabled>解除</button></div><label for="bgmVolume">BGMの音量</label><div class="range"><input class="setting" id="bgmVolume" type="range" min="0" max="100"><output id="bgmVolume-out"></output></div></div>
 <div class="field"><span class="caption">スタート音（スタートで再生、ストップで停止）</span><div class="audio-row"><label class="file">♪ <span id="startFx-name">効果音を選択</span><input type="file" id="startFx-file" accept="audio/*"></label><button class="btn" id="clear-startFx" type="button" disabled>解除</button></div><label for="startVolume">スタート音の音量</label><div class="range"><input class="setting" id="startVolume" type="range" min="0" max="100"><output id="startVolume-out"></output></div></div>
 <div class="field"><span class="caption">ストップ音（ストップで再生）</span><div class="audio-row"><label class="file">♪ <span id="stopFx-name">効果音を選択</span><input type="file" id="stopFx-file" accept="audio/*"></label><button class="btn" id="clear-stopFx" type="button" disabled>解除</button></div><label for="stopVolume">ストップ音の音量</label><div class="range"><input class="setting" id="stopVolume" type="range" min="0" max="100"><output id="stopVolume-out"></output></div></div>
-<label class="check"><input class="setting" id="mute" type="checkbox">すべてミュート</label><div class="hint">アップロードした音声はこのブラウザ内に保存します。</div></section>
-<div class="hint">設定と履歴は端末・ブラウザごとに保存されます。必要な履歴はCSVで保管してください。</div>
+<label class="check"><input class="setting" id="mute" type="checkbox">すべてミュート</label><div class="hint">音声はこの端末にも保存します。GitHubに保存した素材は別端末でも自動で読み込みます。</div></section>
+<div class="hint">数字の設定と抽選履歴は端末・ブラウザごとに保存されます。必要な履歴はCSVで保管してください。</div>
 </aside>
 </div><div class="toast" id="toast" role="status"></div>
 <script>
@@ -42,6 +44,7 @@ function load(key,fallback){try{return JSON.parse(localStorage.getItem(key))||fa
 var prior=load("number-stage-settings-v1",{});var S=Object.assign({},defaults,prior);if(Number.isFinite(prior.volume)){for(var key of ["bgmVolume","startVolume","stopVolume"])if(prior[key]===undefined)S[key]=prior.volume}
 var H=load("number-stage-history-v1",[]);if(!Array.isArray(H))H=[];
 var timer=null,poolNow=[],urls={},face=null,dbPromise=null,toastTimer=null;
+var cloudToken="",cloudManifest={},cloudReady=false,cloudQueue=Promise.resolve(),cloudTouched=new Set(),cloudSequence={};
 var bgm=new Audio();bgm.loop=true;var fx={startFx:new Audio(),stopFx:new Audio()};fx.startFx.loop=false;fx.stopFx.loop=false;
 function say(t){E("toast").textContent=t;E("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){E("toast").classList.remove("show")},3000)}
 function save(){try{localStorage.setItem("number-stage-settings-v1",JSON.stringify(S))}catch(e){say("設定を保存できませんでした")}}
@@ -51,9 +54,83 @@ async function assetGet(k){var d=await db();if(!d)return null;return new Promise
 async function assetSet(k,v){var d=await db();if(!d)return false;return new Promise(function(done){try{var t=d.transaction("assets","readwrite");t.objectStore("assets").put(v,k);t.oncomplete=function(){done(true)};t.onerror=function(){done(false)}}catch(e){done(false)}})}
 async function assetRemove(k){var d=await db();if(!d)return;return new Promise(function(done){try{var t=d.transaction("assets","readwrite");t.objectStore("assets").delete(k);t.oncomplete=done;t.onerror=done}catch(e){done()}})}
 function style(){var s=E("stage");s.style.setProperty("--shade",S.shade/100);s.style.setProperty("--size",S.size+"cqw");s.style.setProperty("--x",S.x+"%");s.style.setProperty("--y",S.y+"%");s.style.setProperty("--color",S.color);var fonts={sans:"Arial,sans-serif",serif:"Georgia,serif",mono:"Consolas,monospace",custom:face?"UploadedNumberFont,sans-serif":"Arial,sans-serif"};s.style.setProperty("--font",fonts[S.font]||fonts.sans);bgm.volume=S.mute?0:S.bgmVolume/100;fx.startFx.volume=S.mute?0:S.startVolume/100;fx.stopFx.volume=S.mute?0:S.stopVolume/100;["shade","size","x","y","bgmVolume","startVolume","stopVolume"].forEach(function(k){E(k+"-out").textContent=S[k]+"%"});E("range-fields").hidden=S.mode!=="range";E("list-fields").hidden=S.mode!=="list";E("repeat-label").textContent=S.noRepeat?"重複なし":"重複あり"}
-function setAsset(k,item){var audio=k==="bgm"?bgm:fx[k];if(audio){audio.pause();if(audio.getAttribute("src"))audio.currentTime=0;audio.removeAttribute("src");audio.load()}if(urls[k])URL.revokeObjectURL(urls[k]);urls[k]=item?URL.createObjectURL(item.blob):null;var label={background:"背景画像を選択",font:"フォントファイルを選択",bgm:"BGMを選択",startFx:"効果音を選択",stopFx:"効果音を選択"};E(k+"-name").textContent=item?item.name:label[k];if(audio){E("clear-"+k).disabled=!item;if(item)audio.src=urls[k];if(k==="bgm")updateBgmButton()}if(k==="background")E("stage").style.setProperty("--image",item?"url("+JSON.stringify(urls[k])+")":"none");if(k==="font"){if(face){document.fonts.delete(face);face=null}if(item){var f=new FontFace("UploadedNumberFont","url("+JSON.stringify(urls[k])+")");f.load().then(function(v){face=v;document.fonts.add(v);style()}).catch(function(){say("フォントを読み込めませんでした")})}}}
-async function upload(k,file){if(!file)return;var item={name:file.name,blob:file};setAsset(k,item);if(!await assetSet(k,item))say("ファイルを保存できませんでした。このタブでは使えます");if(k==="font"){S.font="custom";E("font").value="custom";save();style()}}
-async function restore(){for(var k of ["background","font","bgm","startFx","stopFx"]){var a=await assetGet(k);if(a)setAsset(k,a)}}
+function setAsset(k,item){var audio=k==="bgm"?bgm:fx[k];if(audio){audio.pause();if(audio.getAttribute("src"))audio.currentTime=0;audio.removeAttribute("src");audio.load()}if(urls[k])URL.revokeObjectURL(urls[k]);urls[k]=item?URL.createObjectURL(item.blob):null;var label={background:"背景画像を選択",font:"フォントファイルを選択",bgm:"BGMを選択",startFx:"効果音を選択",stopFx:"効果音を選択"};E(k+"-name").textContent=item?item.name+(item.cloud?" ☁":""):label[k];if(audio){E("clear-"+k).disabled=!item;if(item)audio.src=urls[k];if(k==="bgm")updateBgmButton()}if(k==="background")E("stage").style.setProperty("--image",item?"url("+JSON.stringify(urls[k])+")":"none");if(k==="font"){if(face){document.fonts.delete(face);face=null}if(item){var f=new FontFace("UploadedNumberFont","url("+JSON.stringify(urls[k])+")");f.load().then(function(v){face=v;document.fonts.add(v);style()}).catch(function(){say("フォントを読み込めませんでした")})}}}
+var cloudKeys=["background","bgm","startFx","stopFx"];
+function cloudStatus(message,warning){E("cloud-status").textContent=message;E("cloud-status").classList.toggle("cloud-warning",!!warning)}
+function cloudPath(path){return path.split("/").map(encodeURIComponent).join("/")}
+async function gh(method,path,body){
+ var headers={"Accept":"application/vnd.github+json"};
+ if(cloudToken)headers.Authorization="Bearer "+cloudToken;
+ if(body)headers["Content-Type"]="application/json";
+ var response=await fetch("https://api.github.com/repos/yamadesu46/number/contents/"+cloudPath(path),{method:method,headers:headers,body:body?JSON.stringify(body):undefined,cache:"no-store"});
+ if(response.status===404&&method==="GET")return null;
+ var data=await response.json().catch(function(){return null});
+ if(!response.ok)throw Error("GitHub "+response.status+(data&&data.message?": "+data.message:""));
+ return data
+}
+function fromBase64(value){var binary=atob(value.replace(/\s/g,""));var bytes=Uint8Array.from(binary,function(c){return c.charCodeAt(0)});return new TextDecoder().decode(bytes)}
+async function fileBase64(file){var bytes=new Uint8Array(await file.arrayBuffer()),parts=[];for(var i=0;i<bytes.length;i+=32768)parts.push(String.fromCharCode.apply(null,bytes.subarray(i,i+32768)));return btoa(parts.join(""))}
+function parseManifest(info){if(!info||!info.content)return{};try{var data=JSON.parse(fromBase64(info.content));return data&&typeof data==="object"&&!Array.isArray(data)?data:{}}catch(e){return{}}}
+function enqueueCloud(task){cloudQueue=cloudQueue.catch(function(){}).then(task);return cloudQueue}
+async function writeManifest(k,value){
+ for(var attempt=0;attempt<3;attempt++){
+  var info=await gh("GET","assets/manifest.json"),latest=parseManifest(info),previous=latest[k];
+  if(value)latest[k]=value;else delete latest[k];
+  try{await gh("PUT","assets/manifest.json",{message:"Update shared draw assets",content:btoa(unescape(encodeURIComponent(JSON.stringify(latest,null,2)+"\n"))),sha:info?info.sha:undefined,branch:"main"});cloudManifest=latest;return previous}catch(e){if(attempt===2||!/GitHub (409|422)/.test(String(e)))throw e}
+ }
+}
+async function removeCloudFile(path){if(!path||!/^assets\/(background|bgm|startFx|stopFx)\//.test(path))return;var info=await gh("GET",path);if(info)await gh("DELETE",path,{message:"Remove old shared draw asset",sha:info.sha,branch:"main"})}
+async function publishAsset(k,file,sequence){
+ var ext=(file.name.match(/\.([a-zA-Z0-9]{1,8})$/)||[])[1]||"bin";
+ var nonce=new Uint32Array(1);crypto.getRandomValues(nonce);
+ var path="assets/"+k+"/"+Date.now()+"-"+nonce[0].toString(16)+"."+ext.toLowerCase();
+ var meta={path:path,name:file.name,type:file.type||"application/octet-stream",size:file.size,updatedAt:new Date().toISOString()};
+ cloudStatus(file.name+" をGitHubに保存中…");
+ await gh("PUT",path,{message:"Add "+k+" asset",content:await fileBase64(file),branch:"main"});
+ var old=await writeManifest(k,meta);
+ if(sequence===cloudSequence[k]){E(k+"-name").textContent=file.name+" ☁";await assetSet(k,{name:file.name,blob:file,cloud:true});cloudStatus("GitHubに保存しました。別端末でも読み込めます。");say("GitHubに保存しました")}
+ if(old&&old.path&&old.path!==path)try{await removeCloudFile(old.path)}catch(e){cloudStatus("新しい素材は保存済みです。以前のファイルの整理に失敗しました。",true)}
+}
+async function removeShared(k){
+ if(!cloudReady){say("GitHubの素材情報を読み込み中です");return}
+ if(cloudManifest[k]&&!cloudToken){cloudStatus("解除するには保存用トークンをセットしてください。",true);say("保存用トークンが必要です");return}
+ cloudTouched.add(k);cloudSequence[k]=(cloudSequence[k]||0)+1;
+ if(!cloudManifest[k]&&!cloudToken){setAsset(k,null);E(k+"-file").value="";await assetRemove(k);say("素材を外しました");return}
+ enqueueCloud(async function(){cloudStatus("GitHubから素材を解除中…");var old=await writeManifest(k,null);setAsset(k,null);E(k+"-file").value="";await assetRemove(k);cloudStatus("GitHubから解除しました。");say("GitHubから解除しました");if(old&&old.path)try{await removeCloudFile(old.path)}catch(e){cloudStatus("共有設定は解除済みです。古いファイルの削除に失敗しました。",true)}}).catch(function(e){cloudStatus("解除に失敗: "+e.message,true);say("GitHubから解除できませんでした")})
+}
+async function upload(k,file){
+ if(!file)return;
+ cloudTouched.add(k);cloudSequence[k]=(cloudSequence[k]||0)+1;
+ var sequence=cloudSequence[k],item={name:file.name,blob:file};
+ setAsset(k,item);
+ if(!await assetSet(k,item))say("ファイルを端末に保存できませんでした");
+ if(k==="font"){S.font="custom";E("font").value="custom";save();style();return}
+ if(!cloudToken){cloudStatus("この素材はこの端末のみです。別端末へ共有するには保存用トークンをセットし、もう一度選択してください。",true);say("GitHub保存にはトークンが必要です");return}
+ if(file.size>25*1024*1024){cloudStatus("25 MBを超えるファイルはGitHubへ保存できません。",true);say("ファイルが大きすぎます");return}
+ enqueueCloud(function(){return publishAsset(k,file,sequence)}).catch(function(e){cloudStatus("GitHub保存に失敗: "+e.message,true);say("GitHubへ保存できませんでした")})
+}
+async function restore(){for(var k of ["background","font","bgm","startFx","stopFx"]){var a=await assetGet(k);if(a&&!cloudTouched.has(k))setAsset(k,a)}}
+async function restoreCloud(){
+ try{
+  var info=await gh("GET","assets/manifest.json");
+  cloudManifest=parseManifest(info);
+  if(!info){cloudStatus("GitHubに共有素材はまだありません。保存用トークンをセットして素材を選んでください。");return}
+  var count=0;
+  for(var k of cloudKeys){
+   var meta=cloudManifest[k];if(!meta||typeof meta.path!=="string"||!meta.path.startsWith("assets/"+k+"/")||cloudTouched.has(k))continue;
+   try{
+    var url="https://raw.githubusercontent.com/yamadesu46/number/main/"+cloudPath(meta.path)+"?v="+encodeURIComponent(info.sha);
+    var response=await fetch(url,{cache:"no-store"});if(!response.ok)throw Error(String(response.status));
+    var item={name:meta.name||k,blob:new Blob([await response.arrayBuffer()],{type:meta.type||"application/octet-stream"}),cloud:true};
+    if(cloudTouched.has(k))continue;
+    setAsset(k,item);await assetSet(k,item);count++
+   }catch(e){cloudStatus("一部の共有素材を読み込めませんでした。ページを再読み込みしてください。",true)}
+  }
+  if(count)cloudStatus("GitHubの共有素材を "+count+" 件読み込みました。");
+  else if(!E("cloud-status").classList.contains("cloud-warning"))cloudStatus("GitHubの共有素材を確認しました。");
+ }catch(e){cloudStatus("GitHub素材の確認に失敗: "+e.message,true)}
+ finally{cloudReady=true}
+}
 function read(){["mode","list","font","color"].forEach(function(k){S[k]=E(k).value});["min","max","shade","size","x","y","bgmVolume","startVolume","stopVolume"].forEach(function(k){S[k]=Number(E(k).value)});S.noRepeat=E("noRepeat").checked;S.mute=E("mute").checked;save();style();render()}
 function candidates(){var a=[];if(S.mode==="range"){if(!Number.isSafeInteger(S.min)||!Number.isSafeInteger(S.max)||S.min>S.max)return{a:[],error:"最小値と最大値を確認してください"};var n=S.max-S.min+1;if(n>10000)return{a:[],error:"範囲は10,000個以内にしてください"};for(var i=0;i<n;i++)a.push(S.min+i)}else{var t=S.list.trim();if(!t)return{a:[],error:"候補の数字を入力してください"};var p=t.split(/[\s,、，;；]+/);if(p.length>10000)return{a:[],error:"候補は10,000個以内にしてください"};for(var j=0;j<p.length;j++){if(!/^-?\d+$/.test(p[j])||!Number.isSafeInteger(Number(p[j])))return{a:[],error:"整数で入力してください"};a.push(Number(p[j]))}a=Array.from(new Set(a))}if(S.noRepeat){var used=new Set(H.map(function(v){return v.number}));a=a.filter(function(v){return !used.has(v)})}return{a:a,error:a.length?"":"候補をすべて抽選しました。履歴をリセットしてください"}}
 function rand(n){var v=new Uint32Array(1),limit=4294967296-4294967296%n;do{crypto.getRandomValues(v)}while(v[0]>=limit);return v[0]%n}
@@ -69,13 +146,14 @@ function reset(){if(timer){say("抽選を停止してからリセットしてく
 Object.keys(defaults).forEach(function(k){var el=E(k);if(!el)return;if(el.type==="checkbox")el.checked=S[k];else el.value=S[k]});
 document.querySelectorAll(".setting").forEach(function(el){el.addEventListener("input",read)});
 ["background","font","bgm","startFx","stopFx"].forEach(function(k){E(k+"-file").addEventListener("change",function(e){upload(k,e.target.files[0])})});
-E("clear-background").onclick=async function(){setAsset("background",null);E("background-file").value="";await assetRemove("background");say("背景画像を外しました")};
-["bgm","startFx","stopFx"].forEach(function(k){E("clear-"+k).onclick=async function(){setAsset(k,null);E(k+"-file").value="";await assetRemove(k);say("音声を解除しました")}});
+E("clear-background").onclick=function(){removeShared("background")};
+["bgm","startFx","stopFx"].forEach(function(k){E("clear-"+k).onclick=function(){removeShared(k)}});
 E("start").onclick=start;E("stop").onclick=stop;E("bgm-toggle").onclick=toggleBgm;E("csv").onclick=csv;E("reset").onclick=reset;bgm.addEventListener("play",updateBgmButton);bgm.addEventListener("pause",updateBgmButton);
 E("tab-draw").onclick=function(){selectView("draw")};E("tab-history").onclick=function(){selectView("history")};
 E("fullscreen").onclick=function(){if(document.fullscreenElement)document.exitFullscreen();else E("app").requestFullscreen().catch(function(){say("全画面表示できませんでした")})};
 document.addEventListener("fullscreenchange",function(){E("fullscreen").textContent=document.fullscreenElement?"⛶ 全画面を終了":"⛶ 全画面"});
-style();render();updateBgmButton();restore();
+E("github-connect").onclick=function(){var token=E("github-token").value.trim();if(!token){cloudStatus("トークンを入力してください。",true);return}cloudToken=token;E("github-token").value="";cloudStatus("このタブで保存用トークンをセットしました。素材を選ぶとGitHubへ保存します。");say("保存用トークンをセットしました")};
+style();render();updateBgmButton();restore().then(restoreCloud);
 })();
 </script>
 </body>
