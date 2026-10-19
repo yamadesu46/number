@@ -116,7 +116,7 @@ async function upload(k,file){
  if(k==="font"){S.font="custom";E("font").value="custom";save();style();return}
  if(!cloudToken){cloudStatus("この素材はこの端末のみです。別端末へ共有するには保存用トークンをセットし、もう一度選択してください。",true);say("GitHub保存にはトークンが必要です");return}
  if(file.size>500*1024*1024){cloudStatus("このファイルは "+(file.size/1024/1024).toFixed(1)+" MiBです。GitHub共有は500 MiBまでです。",true);say("ファイルが大きすぎます");return}
- enqueueCloud(function(){return publishAsset(k,file,sequence)}).catch(function(e){cloudStatus("GitHub保存に失敗: "+e.message,true);say("GitHubへ保存できませんでした")})
+ enqueueCloud(function(){return publishAsset(k,file,sequence)}).catch(function(e){var msg=String(e.message||e);if(/GitHub 401/.test(msg)){cloudToken="";cloudStatus("GitHub保存に失敗: トークンが無効か期限切れです。新しいトークンを作成してセットしてください。",true)}else if(/GitHub 403/.test(msg))cloudStatus("GitHub保存に失敗: リポジトリ number の Contents を Read and write にしてください。",true);else cloudStatus("GitHub保存に失敗: "+msg,true);say("GitHubへ保存できませんでした")})
 }
 async function restore(){for(var k of ["background","font","bgm","startFx","stopFx"]){var a=await assetGet(k);if(a&&!cloudTouched.has(k))setAsset(k,a)}}
 async function restoreCloud(){
@@ -162,7 +162,7 @@ E("start").onclick=start;E("stop").onclick=stop;E("bgm-toggle").onclick=toggleBg
 E("tab-draw").onclick=function(){selectView("draw")};E("tab-history").onclick=function(){selectView("history")};
 E("fullscreen").onclick=function(){if(document.fullscreenElement)document.exitFullscreen();else E("app").requestFullscreen().catch(function(){say("全画面表示できませんでした")})};
 document.addEventListener("fullscreenchange",function(){E("fullscreen").textContent=document.fullscreenElement?"⛶ 全画面を終了":"⛶ 全画面"});
-E("github-connect").onclick=function(){var token=E("github-token").value.trim();if(!token){cloudStatus("トークンを入力してください。",true);return}cloudToken=token;E("github-token").value="";cloudStatus("このタブで保存用トークンをセットしました。素材を選ぶとGitHubへ保存します。");say("保存用トークンをセットしました")};
+E("github-connect").onclick=async function(){var token=E("github-token").value.trim();if(!token){cloudStatus("トークンを入力してください。",true);return}var button=E("github-connect");button.disabled=true;cloudStatus("GitHubトークンを確認中…");try{var response=await fetch("https://api.github.com/user",{headers:{"Accept":"application/vnd.github+json","Authorization":"Bearer "+token},cache:"no-store"});if(!response.ok)throw Error(response.status===401?"GitHub 401: トークンが無効か期限切れです。新しいトークンを作成してください。":"GitHub "+response.status+": トークンを確認できませんでした。");var user=await response.json();cloudToken=token;E("github-token").value="";cloudStatus("GitHub認証済み（"+user.login+"）。素材を選ぶと保存します。");say("GitHub認証を確認しました")}catch(e){cloudToken="";cloudStatus(e.message||"トークンを確認できませんでした。",true);say("GitHub認証に失敗しました")}finally{button.disabled=false}};
 style();render();updateBgmButton();restore().then(restoreCloud);
 })();
 </script>
