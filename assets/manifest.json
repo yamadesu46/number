@@ -25,5 +25,20 @@
     "type": "image/png",
     "size": 2633775,
     "updatedAt": "2026-10-20T00:15:02.336Z"
+  },
+  "startFx": {
+    "paths": [
+      "assets/startFx/1792455546516-370fba17/part-001.bin",
+      "assets/startFx/1792455546516-370fba17/part-002.bin",
+      "assets/startFx/1792455546516-370fba17/part-003.bin",
+      "assets/startFx/1792455546516-370fba17/part-004.bin",
+      "assets/startFx/1792455546516-370fba17/part-005.bin",
+      "assets/startFx/1792455546516-370fba17/part-006.bin",
+      "assets/startFx/1792455546516-370fba17/part-007.bin"
+    ],
+    "name": "ドラムロールずっと.wav",
+    "type": "audio/wav",
+    "size": 132109080,
+    "updatedAt": "2026-10-20T00:20:01.717Z"
   }
 }
