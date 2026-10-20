@@ -16,5 +16,14 @@
     "type": "audio/wav",
     "size": 517080,
     "updatedAt": "2026-10-20T00:12:02.531Z"
+  },
+  "background": {
+    "paths": [
+      "assets/background/1792455299247-f07d1b51/part-001.bin"
+    ],
+    "name": "ChatGPT Image 2026年7月10日 12_08_18.png",
+    "type": "image/png",
+    "size": 2633775,
+    "updatedAt": "2026-10-20T00:15:02.336Z"
   }
 }
