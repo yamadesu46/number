@@ -7,5 +7,14 @@
     "type": "audio/mpeg",
     "size": 3552069,
     "updatedAt": "2026-10-20T00:10:33.342Z"
+  },
+  "stopFx": {
+    "paths": [
+      "assets/stopFx/1792455120125-dc42cf61/part-001.bin"
+    ],
+    "name": "ドラムロールどん.wav",
+    "type": "audio/wav",
+    "size": 517080,
+    "updatedAt": "2026-10-20T00:12:02.531Z"
   }
 }
